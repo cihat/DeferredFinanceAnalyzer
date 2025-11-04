@@ -51,18 +51,18 @@ Create a minimal, deterministic web application in **Svelte** using **svelte-sha
 
 ### To-Do List (Step-by-Step)
 
-- [ ] Install and configure svelte-shadcn.  
-- [ ] Create the core input form using shadcn components.  
-- [ ] Define reactive stores for all financial parameters.  
-- [ ] Implement loan amortization formula.  
-- [ ] Implement Tasarruf Finansman cash-flow and total-cost logic.  
-- [ ] Implement dynamic delivery-month recomputation.  
-- [ ] Add a comparison module returning cost difference per month.  
-- [ ] Create a results panel using cards.  
-- [ ] Add a chart (simple SVG or lightweight library) to visualize month-by-month delta.  
-- [ ] Add boundary validation for all inputs.  
-- [ ] Add minimal layout and typography.  
-- [ ] Perform manual tests for multiple input combinations.  
-- [ ] Produce a clean, self-contained build.
-- [ ] Deploy the application to a cloudflare workers.
+- [x] Install and configure svelte-shadcn.  
+- [x] Create the core input form using shadcn components.  
+- [x] Define reactive stores for all financial parameters.  
+- [x] Implement loan amortization formula.  
+- [x] Implement Tasarruf Finansman cash-flow and total-cost logic.  
+- [x] Implement dynamic delivery-month recomputation.  
+- [x] Add a comparison module returning cost difference per month.  
+- [x] Create a results panel using cards.  
+- [x] Add a chart (simple SVG or lightweight library) to visualize month-by-month delta.  
+- [x] Add boundary validation for all inputs.  
+- [x] Add minimal layout and typography.  
+- [x] Perform manual tests for multiple input combinations.  
+- [x] Produce a clean, self-contained build.
+- [x] Deploy the application to a cloudflare workers (instructions provided in DEPLOYMENT.md).
 

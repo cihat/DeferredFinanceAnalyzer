@@ -1,58 +1,169 @@
-# Svelte library
+# Finansman Karşılaştırma Aracı (Financial Comparison Tool)
 
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
+A modern, responsive web application built with SvelteKit and shadcn-svelte that helps users compare the total cost of traditional bank loans versus Tasarruf Finansman System (TFS).
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+![SvelteKit](https://img.shields.io/badge/SvelteKit-5.0-FF3E00?style=flat&logo=svelte&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- 🧮 **Accurate Financial Calculations**: Standard amortization formulas for bank loans and TFS cost modeling
+- 📊 **Interactive Visualizations**: Real-time bar charts showing cost differences across delivery months
+- 🎯 **Dynamic Delivery Month**: Slider to test different delivery scenarios
+- 📱 **Fully Responsive**: Works seamlessly on mobile, tablet, and desktop
+- ⚡ **Real-time Updates**: All calculations update instantly as you change inputs
+- 🎨 **Clean UI**: Built with shadcn-svelte components for a modern, professional look
+- 🌍 **Turkish Locale**: Currency and number formatting in Turkish format
+- ⚙️ **No Backend Required**: Runs entirely client-side with zero latency
 
-```sh
-# create a new project in the current directory
-npx sv create
+## What Does It Compare?
 
-# create a new project in my-app
-npx sv create my-app
+### Bank Loan
+- Calculates monthly payments using standard amortization formula
+- Shows total interest paid over the loan term
+- Displays total cost (principal + interest)
+
+### Tasarruf Finansman System (TFS)
+- Equal monthly savings plan
+- Delivery at user-selected month
+- Total cost = principal + organization fee
+- No interest charges
+
+## Technologies
+
+- **Framework**: SvelteKit 5.0 (with Svelte 5 runes)
+- **UI Components**: shadcn-svelte
+- **Styling**: Tailwind CSS 4.0
+- **Language**: TypeScript
+- **Deployment**: Cloudflare Pages/Workers
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ or Bun
+- pnpm (recommended) or npm
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/DeferredFinance.git
+cd DeferredFinance
+
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm run dev
 ```
 
-## Developing
+Open [http://localhost:5173](http://localhost:5173) to see the application.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Usage
 
-```sh
-npm run dev
+1. **Set General Parameters**
+   - Enter the target amount (principal)
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+2. **Configure Bank Loan**
+   - Set annual interest rate
+   - Set loan term in months
+
+3. **Configure Tasarruf Finansman**
+   - Set TFS term in months
+   - Set organization fee
+   - Use slider to select delivery month
+
+4. **View Results**
+   - Compare total costs side-by-side
+   - See which option is more advantageous
+   - Review the visualization showing cost differences across all delivery months
+
+## Project Structure
+
+```
+DeferredFinance/
+├── src/
+│   ├── lib/
+│   │   ├── components/ui/     # shadcn-svelte components
+│   │   ├── stores/            # Reactive state management
+│   │   │   └── financialStore.svelte.ts
+│   │   └── utils/             # Utility functions
+│   │       ├── financial.ts   # Financial calculation logic
+│   │       └── utils.ts       # UI utilities
+│   └── routes/
+│       ├── +layout.svelte     # App layout
+│       └── +page.svelte       # Main comparison page
+├── docs/
+│   └── steps.md              # Development checklist
+├── DEPLOYMENT.md             # Deployment instructions
+├── components.json           # shadcn-svelte config
+├── wrangler.toml            # Cloudflare config
+└── package.json
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+## Key Components
 
-## Building
+### Financial Calculations (`src/lib/utils/financial.ts`)
 
-To build your library:
+- `calculateLoan()`: Standard amortization formula for bank loans
+- `calculateTFS()`: Tasarruf Finansman cost calculation
+- `compareOptions()`: Comparison logic determining better option
+- `generateMonthlyComparison()`: Data for visualization chart
 
-```sh
-npm pack
+### Reactive Store (`src/lib/stores/financialStore.svelte.ts`)
+
+- Uses Svelte 5 runes (`$state`, `$derived`)
+- Real-time reactivity on all inputs
+- Automatic validation
+- Computed comparison results
+
+## Building for Production
+
+```bash
+# Build the application
+pnpm run build
+
+# Preview production build locally
+pnpm run preview
 ```
 
-To create a production version of your showcase app:
+## Deployment
 
-```sh
-npm run build
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions to Cloudflare Pages/Workers.
+
+Quick deploy:
+```bash
+pnpm run build
+npx wrangler pages deploy .svelte-kit/cloudflare
 ```
 
-You can preview the production build with `npm run preview`.
+## Development Roadmap
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- [x] Core financial calculations
+- [x] Responsive UI with shadcn-svelte
+- [x] Interactive delivery month slider
+- [x] Visual comparison chart
+- [x] Production build
+- [x] Cloudflare deployment setup
+- [ ] Add inflation rate adjustments
+- [ ] Export comparison as PDF
+- [ ] Add more financial products
+- [ ] Multi-language support
 
-## Publishing
+## License
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
+MIT License - see LICENSE file for details
 
-To publish your library to [npm](https://www.npmjs.com):
+## Contributing
 
-```sh
-npm publish
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Support
+
+For questions or issues, please open an issue on GitHub.
+
+---
+
+Built with ❤️ using SvelteKit and shadcn-svelte
