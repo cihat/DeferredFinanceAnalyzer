@@ -13,6 +13,7 @@ export interface TFSParams {
 	termMonths: number;
 	organizationFee: number;
 	deliveryMonth: number;
+	annualInflationRate?: number;
 }
 
 export interface LoanResult {
@@ -25,6 +26,9 @@ export interface TFSResult {
 	monthlyPayment: number;
 	totalCost: number;
 	deliveryMonth: number;
+	principalPresentValue?: number;
+	realValueLoss?: number;
+	inflationImpact?: number;
 }
 
 export interface ComparisonResult {
@@ -33,6 +37,8 @@ export interface ComparisonResult {
 	difference: number;
 	betterOption: 'loan' | 'tfs';
 	savingsPercentage: number;
+	inflationAdjustedDifference?: number;
+	tfsPrincipalPresentValue?: number;
 }
 
 /**
@@ -71,14 +77,28 @@ export function calculateLoan(params: LoanParams): LoanResult {
 }
 
 /**
+ * Calculate present value considering inflation
+ * PV = FV / (1 + inflation)^months
+ */
+export function calculatePresentValue(
+	futureValue: number,
+	annualInflationRate: number,
+	months: number
+): number {
+	const monthlyInflationRate = annualInflationRate / 100 / 12;
+	return futureValue / Math.pow(1 + monthlyInflationRate, months);
+}
+
+/**
  * Calculate Tasarruf Finansman System costs
  * - User pays equal monthly installments
  * - Receives full principal at delivery month
  * - Continues paying until term ends
  * - Total cost = principal + organization fee
+ * - If inflation rate provided, calculates present value of received amount
  */
 export function calculateTFS(params: TFSParams): TFSResult {
-	const { principal, termMonths, organizationFee, deliveryMonth } = params;
+	const { principal, termMonths, organizationFee, deliveryMonth, annualInflationRate = 0 } = params;
 	
 	// Monthly payment is simply principal divided by term
 	const monthlyPayment = principal / termMonths;
@@ -86,15 +106,31 @@ export function calculateTFS(params: TFSParams): TFSResult {
 	// Total cost is principal plus organization fee
 	const totalCost = principal + organizationFee;
 	
+	// Calculate inflation impact if inflation rate provided
+	let principalPresentValue = principal;
+	let realValueLoss = 0;
+	let inflationImpact = 0;
+	
+	if (annualInflationRate > 0) {
+		// Calculate the present value of the principal received at delivery month
+		principalPresentValue = calculatePresentValue(principal, annualInflationRate, deliveryMonth);
+		realValueLoss = principal - principalPresentValue;
+		inflationImpact = (realValueLoss / principal) * 100;
+	}
+	
 	return {
 		monthlyPayment,
 		totalCost,
-		deliveryMonth
+		deliveryMonth,
+		principalPresentValue,
+		realValueLoss,
+		inflationImpact
 	};
 }
 
 /**
  * Compare loan vs TFS and determine which is better
+ * Takes inflation into account for TFS delivery value
  */
 export function compareOptions(
 	loanParams: LoanParams,
@@ -103,21 +139,37 @@ export function compareOptions(
 	const loanResult = calculateLoan(loanParams);
 	const tfsResult = calculateTFS(tfsParams);
 	
+	// Standard comparison without inflation adjustment
 	const difference = loanResult.totalCost - tfsResult.totalCost;
 	const betterOption = difference > 0 ? 'tfs' : 'loan';
 	const savingsPercentage = Math.abs(difference / loanResult.totalCost) * 100;
+	
+	// Inflation-adjusted comparison
+	// For TFS: you pay totalCost but receive principal at delivery month
+	// The real value of what you receive is diminished by inflation
+	let inflationAdjustedDifference = difference;
+	
+	if (tfsParams.annualInflationRate && tfsParams.annualInflationRate > 0) {
+		// Real cost of TFS considering inflation
+		// You pay totalCost but receive only principalPresentValue in today's money
+		const tfsRealCost = tfsResult.totalCost + (tfsResult.realValueLoss || 0);
+		inflationAdjustedDifference = loanResult.totalCost - tfsRealCost;
+	}
 	
 	return {
 		loanTotal: loanResult.totalCost,
 		tfsTotal: tfsResult.totalCost,
 		difference,
 		betterOption,
-		savingsPercentage
+		savingsPercentage,
+		inflationAdjustedDifference,
+		tfsPrincipalPresentValue: tfsResult.principalPresentValue
 	};
 }
 
 /**
  * Generate month-by-month comparison data for charting
+ * Includes inflation impact for each delivery month
  */
 export function generateMonthlyComparison(
 	loanParams: LoanParams,
@@ -128,6 +180,10 @@ export function generateMonthlyComparison(
 	tfsTotal: number;
 	difference: number;
 	betterOption: 'loan' | 'tfs';
+	principalPresentValue?: number;
+	realValueLoss?: number;
+	inflationImpact?: number;
+	inflationAdjustedDifference?: number;
 }> {
 	const results: Array<{
 		month: number;
@@ -135,6 +191,10 @@ export function generateMonthlyComparison(
 		tfsTotal: number;
 		difference: number;
 		betterOption: 'loan' | 'tfs';
+		principalPresentValue?: number;
+		realValueLoss?: number;
+		inflationImpact?: number;
+		inflationAdjustedDifference?: number;
 	}> = [];
 	
 	const loanResult = calculateLoan(loanParams);
@@ -143,12 +203,23 @@ export function generateMonthlyComparison(
 		const tfsResult = calculateTFS({ ...tfsParams, deliveryMonth: month });
 		const difference = loanResult.totalCost - tfsResult.totalCost;
 		
+		// Calculate inflation-adjusted difference
+		let inflationAdjustedDifference = difference;
+		if (tfsParams.annualInflationRate && tfsParams.annualInflationRate > 0) {
+			const tfsRealCost = tfsResult.totalCost + (tfsResult.realValueLoss || 0);
+			inflationAdjustedDifference = loanResult.totalCost - tfsRealCost;
+		}
+		
 		results.push({
 			month,
 			loanTotal: loanResult.totalCost,
 			tfsTotal: tfsResult.totalCost,
 			difference,
-			betterOption: difference > 0 ? 'tfs' : 'loan'
+			betterOption: difference > 0 ? 'tfs' : 'loan',
+			principalPresentValue: tfsResult.principalPresentValue,
+			realValueLoss: tfsResult.realValueLoss,
+			inflationImpact: tfsResult.inflationImpact,
+			inflationAdjustedDifference
 		});
 	}
 	

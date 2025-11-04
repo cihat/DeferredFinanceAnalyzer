@@ -23,6 +23,7 @@ class FinancialStore {
 	tfsTermMonths = $state(60);
 	tfsOrganizationFee = $state(10000);
 	deliveryMonth = $state(30);
+	inflationRate = $state(3.0); // Annual inflation rate
 
 	// Computed results
 	loanResult = $derived.by((): LoanResult => {
@@ -38,7 +39,8 @@ class FinancialStore {
 			principal: this.principal,
 			termMonths: this.tfsTermMonths,
 			organizationFee: this.tfsOrganizationFee,
-			deliveryMonth: this.deliveryMonth
+			deliveryMonth: this.deliveryMonth,
+			annualInflationRate: this.inflationRate
 		});
 	});
 
@@ -53,7 +55,8 @@ class FinancialStore {
 				principal: this.principal,
 				termMonths: this.tfsTermMonths,
 				organizationFee: this.tfsOrganizationFee,
-				deliveryMonth: this.deliveryMonth
+				deliveryMonth: this.deliveryMonth,
+				annualInflationRate: this.inflationRate
 			}
 		);
 	});
@@ -68,7 +71,8 @@ class FinancialStore {
 			{
 				principal: this.principal,
 				termMonths: this.tfsTermMonths,
-				organizationFee: this.tfsOrganizationFee
+				organizationFee: this.tfsOrganizationFee,
+				annualInflationRate: this.inflationRate
 			}
 		);
 	});
@@ -113,6 +117,10 @@ class FinancialStore {
 
 	setDeliveryMonth(value: number) {
 		this.deliveryMonth = Math.max(1, Math.min(this.tfsTermMonths, Math.round(value)));
+	}
+
+	setInflationRate(value: number) {
+		this.inflationRate = Math.max(0, value);
 	}
 }
 

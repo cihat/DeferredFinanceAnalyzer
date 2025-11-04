@@ -2,13 +2,20 @@
 
 A modern, responsive web application built with SvelteKit and shadcn-svelte that helps users compare the total cost of traditional bank loans versus Tasarruf Finansman System (TFS).
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Cloudflare-orange?style=for-the-badge)](https://556c2047.deferredfinance.pages.dev)
+
 ![SvelteKit](https://img.shields.io/badge/SvelteKit-5.0-FF3E00?style=flat&logo=svelte&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
 
+## 🌐 Live Demo
+
+**Production:** [https://8c274ae1.deferredfinance.pages.dev](https://8c274ae1.deferredfinance.pages.dev)
+
 ## Features
 
 - 🧮 **Accurate Financial Calculations**: Standard amortization formulas for bank loans and TFS cost modeling
+- 💰 **Inflation Adjustment**: Real-time inflation impact calculation showing how delivery month affects purchasing power
 - 📊 **Interactive Visualizations**: Real-time bar charts showing cost differences across delivery months
 - 🎯 **Dynamic Delivery Month**: Slider to test different delivery scenarios
 - 📱 **Fully Responsive**: Works seamlessly on mobile, tablet, and desktop
@@ -16,6 +23,7 @@ A modern, responsive web application built with SvelteKit and shadcn-svelte that
 - 🎨 **Clean UI**: Built with shadcn-svelte components for a modern, professional look
 - 🌍 **Turkish Locale**: Currency and number formatting in Turkish format
 - ⚙️ **No Backend Required**: Runs entirely client-side with zero latency
+- ⚠️ **Present Value Analysis**: Shows how inflation erodes the real value of money over time
 
 ## What Does It Compare?
 
@@ -65,6 +73,7 @@ Open [http://localhost:5173](http://localhost:5173) to see the application.
 
 1. **Set General Parameters**
    - Enter the target amount (principal)
+   - **Set annual inflation rate** (shows real purchasing power impact)
 
 2. **Configure Bank Loan**
    - Set annual interest rate
@@ -77,8 +86,10 @@ Open [http://localhost:5173](http://localhost:5173) to see the application.
 
 4. **View Results**
    - Compare total costs side-by-side
+   - **See inflation impact**: How much purchasing power you lose with later delivery
    - See which option is more advantageous
    - Review the visualization showing cost differences across all delivery months
+   - Check present value of money received at delivery month
 
 ## Project Structure
 
@@ -147,7 +158,7 @@ npx wrangler pages deploy .svelte-kit/cloudflare
 - [x] Visual comparison chart
 - [x] Production build
 - [x] Cloudflare deployment setup
-- [ ] Add inflation rate adjustments
+- [x] **Add inflation rate adjustments** ✅
 - [ ] Export comparison as PDF
 - [ ] Add more financial products
 - [ ] Multi-language support

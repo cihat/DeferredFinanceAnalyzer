@@ -47,6 +47,21 @@
 							{formatCurrency(financialStore.principal)}
 						</p>
 					</div>
+
+					<div class="space-y-2">
+						<Label for="inflation-rate">Yıllık Enflasyon Oranı (%)</Label>
+						<Input
+							id="inflation-rate"
+							type="number"
+							value={financialStore.inflationRate}
+							oninput={(e) => financialStore.setInflationRate(Number(e.currentTarget.value))}
+							min="0"
+							step="0.1"
+						/>
+						<p class="text-xs text-muted-foreground">
+							Paranın değer kaybını hesaplamak için kullanılır
+						</p>
+					</div>
 				</Card.Content>
 			</Card.Root>
 
@@ -195,6 +210,23 @@
 								{formatCurrency(financialStore.tfsOrganizationFee)}
 							</p>
 						</div>
+						{#if financialStore.inflationRate > 0 && financialStore.tfsResult.principalPresentValue}
+							<div class="rounded-lg bg-amber-50 dark:bg-amber-950 p-3 space-y-1">
+								<p class="text-xs font-semibold text-amber-900 dark:text-amber-100">
+									⚠️ Enflasyon Etkisi
+								</p>
+								<p class="text-xs text-amber-800 dark:text-amber-200">
+									Alacağınız tutarın bugünkü değeri:
+								</p>
+								<p class="text-lg font-bold text-amber-900 dark:text-amber-100">
+									{formatCurrency(financialStore.tfsResult.principalPresentValue)}
+								</p>
+								<p class="text-xs text-amber-700 dark:text-amber-300">
+									Değer kaybı: {formatCurrency(financialStore.tfsResult.realValueLoss || 0)}
+									({formatPercentage(financialStore.tfsResult.inflationImpact || 0)})
+								</p>
+							</div>
+						{/if}
 						<div class="pt-2 border-t">
 							<p class="text-sm text-muted-foreground">Toplam Maliyet</p>
 							<p class="text-2xl font-bold">
@@ -252,12 +284,28 @@
 				<Card.Header>
 					<Card.Title>Teslimat Ayına Göre Fark Analizi</Card.Title>
 					<p class="text-sm text-muted-foreground">
-						Her teslimat ayı için maliyet farkı (Banka Kredisi - TFS)
+						Her teslimat ayı için maliyet farkı
+						{#if financialStore.inflationRate > 0}
+							<span class="text-amber-600 dark:text-amber-400">(enflasyon dahil)</span>
+						{/if}
 					</p>
 				</Card.Header>
 				<Card.Content>
 					<div class="space-y-2">
 						{#each financialStore.monthlyComparisonData as data}
+							{@const displayDifference =
+								financialStore.inflationRate > 0 && data.inflationAdjustedDifference
+									? data.inflationAdjustedDifference
+									: data.difference}
+							{@const maxDiff = Math.max(
+								...financialStore.monthlyComparisonData.map((d) =>
+									Math.abs(
+										financialStore.inflationRate > 0 && d.inflationAdjustedDifference
+											? d.inflationAdjustedDifference
+											: d.difference
+									)
+								)
+							)}
 							<div class="flex items-center gap-2">
 								<div class="w-16 text-sm text-muted-foreground shrink-0">
 									{data.month}. ay
@@ -265,46 +313,48 @@
 								<div class="flex-1 h-8 relative">
 									<div
 										class="absolute top-0 h-full rounded transition-all"
-										class:bg-green-500={data.difference > 0}
-										class:bg-red-500={data.difference < 0}
+										class:bg-green-500={displayDifference > 0}
+										class:bg-red-500={displayDifference < 0}
 										style="width: {Math.min(
-											Math.abs(data.difference) /
-												Math.max(
-													...financialStore.monthlyComparisonData.map((d) => Math.abs(d.difference))
-												) *
-												100,
+											(Math.abs(displayDifference) / maxDiff) * 100,
 											100
 										)}%; opacity: {data.month === financialStore.deliveryMonth ? 1 : 0.6};"
 									></div>
 									{#if data.month === financialStore.deliveryMonth}
 										<div
 											class="absolute top-0 h-full border-2 border-white rounded pointer-events-none"
-											style="width: {Math.min(
-												Math.abs(data.difference) /
-													Math.max(
-														...financialStore.monthlyComparisonData.map((d) => Math.abs(d.difference))
-													) *
-													100,
-												100
-											)}%;"
+											style="width: {Math.min((Math.abs(displayDifference) / maxDiff) * 100, 100)}%;"
 										></div>
 									{/if}
 								</div>
-								<div class="w-32 text-sm text-right shrink-0">
-									{formatCurrency(Math.abs(data.difference))}
+								<div class="w-36 text-sm text-right shrink-0">
+									<div>{formatCurrency(Math.abs(displayDifference))}</div>
+									{#if financialStore.inflationRate > 0 && data.inflationImpact}
+										<div class="text-xs text-amber-600 dark:text-amber-400">
+											-{formatPercentage(data.inflationImpact)} değer
+										</div>
+									{/if}
 								</div>
 							</div>
 						{/each}
 					</div>
-					<div class="mt-4 flex items-center gap-4 text-xs">
-						<div class="flex items-center gap-2">
-							<div class="w-4 h-4 bg-green-500 rounded"></div>
-							<span>TFS Daha Avantajlı</span>
+					<div class="mt-4 space-y-2">
+						<div class="flex items-center gap-4 text-xs">
+							<div class="flex items-center gap-2">
+								<div class="w-4 h-4 bg-green-500 rounded"></div>
+								<span>TFS Daha Avantajlı</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<div class="w-4 h-4 bg-red-500 rounded"></div>
+								<span>Kredi Daha Avantajlı</span>
+							</div>
 						</div>
-						<div class="flex items-center gap-2">
-							<div class="w-4 h-4 bg-red-500 rounded"></div>
-							<span>Kredi Daha Avantajlı</span>
-						</div>
+						{#if financialStore.inflationRate > 0}
+							<div class="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950 p-2 rounded">
+								💡 Enflasyon hesaplamalara dahil edildi. Geç teslimat alındığında paranın satın
+								alma gücü azalır.
+							</div>
+						{/if}
 					</div>
 				</Card.Content>
 			</Card.Root>

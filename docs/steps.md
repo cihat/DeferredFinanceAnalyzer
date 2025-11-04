@@ -64,5 +64,5 @@ Create a minimal, deterministic web application in **Svelte** using **svelte-sha
 - [x] Add minimal layout and typography.  
 - [x] Perform manual tests for multiple input combinations.  
 - [x] Produce a clean, self-contained build.
-- [x] Deploy the application to a cloudflare workers (instructions provided in DEPLOYMENT.md).
+- [x] Deploy the application to Cloudflare Pages ✅ **LIVE:** https://556c2047.deferredfinance.pages.dev
 
