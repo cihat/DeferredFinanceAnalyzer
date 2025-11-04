@@ -2,10 +2,11 @@
 
 ## Live Application
 
-**Latest Production URL:** https://8c274ae1.deferredfinance.pages.dev
+**Latest Production URL:** https://fbec739a.deferredfinance.pages.dev
 
 **Previous Deployments:**
-- https://556c2047.deferredfinance.pages.dev (initial deployment)
+- https://8c274ae1.deferredfinance.pages.dev (v1.1.0 - inflation feature)
+- https://556c2047.deferredfinance.pages.dev (v1.0.0 - initial deployment)
 
 **Custom Domain:** https://deferredfinance.pages.dev (also available)
 
@@ -27,6 +28,21 @@
 
 ## How to Update
 
+### Option 1: Single Command (Recommended)
+```bash
+pnpm run deploy
+```
+
+### Option 2: Separate Steps
+```bash
+# 1. Build only
+pnpm run deploy:build
+
+# 2. Deploy only (after build)
+pnpm run deploy:push
+```
+
+### Option 3: Manual
 ```bash
 # 1. Make your changes
 # 2. Build the project

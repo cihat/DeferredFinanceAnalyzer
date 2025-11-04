@@ -10,7 +10,7 @@ A modern, responsive web application built with SvelteKit and shadcn-svelte that
 
 ## 🌐 Live Demo
 
-**Production:** [https://8c274ae1.deferredfinance.pages.dev](https://8c274ae1.deferredfinance.pages.dev)
+**Production:** [https://fbec739a.deferredfinance.pages.dev](https://fbec739a.deferredfinance.pages.dev)
 
 ## Features
 
@@ -146,8 +146,12 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions to Clo
 
 Quick deploy:
 ```bash
-pnpm run build
-npx wrangler pages deploy .svelte-kit/cloudflare
+# Build and deploy in one command
+pnpm run deploy
+
+# Or separately
+pnpm run deploy:build  # Build only
+pnpm run deploy:push   # Deploy only
 ```
 
 ## Development Roadmap
