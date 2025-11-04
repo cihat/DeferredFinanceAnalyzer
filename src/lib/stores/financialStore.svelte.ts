@@ -18,18 +18,18 @@ import {
 class FinancialStore {
 	// Input parameters
 	principal = $state(500000);
-	loanInterestRate = $state(2.5); // Annual percentage
+	loanInterestRate = $state(3.0); // Aylık faiz oranı (%)
 	loanTermMonths = $state(120);
 	tfsTermMonths = $state(60);
 	tfsOrganizationFee = $state(10000);
 	deliveryMonth = $state(30);
-	inflationRate = $state(3.0); // Annual inflation rate
+	inflationRate = $state(2.5); // Aylık enflasyon oranı (%)
 
 	// Computed results
 	loanResult = $derived.by((): LoanResult => {
 		return calculateLoan({
 			principal: this.principal,
-			annualInterestRate: this.loanInterestRate,
+			monthlyInterestRate: this.loanInterestRate,
 			termMonths: this.loanTermMonths
 		});
 	});
@@ -40,7 +40,7 @@ class FinancialStore {
 			termMonths: this.tfsTermMonths,
 			organizationFee: this.tfsOrganizationFee,
 			deliveryMonth: this.deliveryMonth,
-			annualInflationRate: this.inflationRate
+			monthlyInflationRate: this.inflationRate
 		});
 	});
 
@@ -48,7 +48,7 @@ class FinancialStore {
 		return compareOptions(
 			{
 				principal: this.principal,
-				annualInterestRate: this.loanInterestRate,
+				monthlyInterestRate: this.loanInterestRate,
 				termMonths: this.loanTermMonths
 			},
 			{
@@ -56,7 +56,7 @@ class FinancialStore {
 				termMonths: this.tfsTermMonths,
 				organizationFee: this.tfsOrganizationFee,
 				deliveryMonth: this.deliveryMonth,
-				annualInflationRate: this.inflationRate
+				monthlyInflationRate: this.inflationRate
 			}
 		);
 	});
@@ -65,14 +65,14 @@ class FinancialStore {
 		return generateMonthlyComparison(
 			{
 				principal: this.principal,
-				annualInterestRate: this.loanInterestRate,
+				monthlyInterestRate: this.loanInterestRate,
 				termMonths: this.loanTermMonths
 			},
 			{
 				principal: this.principal,
 				termMonths: this.tfsTermMonths,
 				organizationFee: this.tfsOrganizationFee,
-				annualInflationRate: this.inflationRate
+				monthlyInflationRate: this.inflationRate
 			}
 		);
 	});

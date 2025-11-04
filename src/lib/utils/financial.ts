@@ -4,7 +4,7 @@
 
 export interface LoanParams {
 	principal: number;
-	annualInterestRate: number;
+	monthlyInterestRate: number; // Aylık faiz oranı (bankaların kullandığı)
 	termMonths: number;
 }
 
@@ -13,7 +13,7 @@ export interface TFSParams {
 	termMonths: number;
 	organizationFee: number;
 	deliveryMonth: number;
-	annualInflationRate?: number;
+	monthlyInflationRate?: number; // Aylık enflasyon oranı (TÜİK'in açıkladığı)
 }
 
 export interface LoanResult {
@@ -44,12 +44,15 @@ export interface ComparisonResult {
 /**
  * Calculate bank loan using standard amortization formula
  * Monthly Payment = P * r * (1+r)^n / ((1+r)^n - 1)
+ * 
+ * Banks use monthly nominal interest rate directly.
+ * Example: If bank says 3% monthly rate, use 3 (not 36%)
  */
 export function calculateLoan(params: LoanParams): LoanResult {
-	const { principal, annualInterestRate, termMonths } = params;
+	const { principal, monthlyInterestRate, termMonths } = params;
 	
-	// Convert annual rate to monthly rate (as decimal)
-	const monthlyRate = annualInterestRate / 100 / 12;
+	// Convert percentage to decimal (3% -> 0.03)
+	const monthlyRate = monthlyInterestRate / 100;
 	
 	// Handle zero interest rate edge case
 	if (monthlyRate === 0) {
@@ -62,6 +65,7 @@ export function calculateLoan(params: LoanParams): LoanResult {
 	}
 	
 	// Standard amortization formula
+	// Payment = P × r × (1 + r)^n / ((1 + r)^n – 1)
 	const numerator = monthlyRate * Math.pow(1 + monthlyRate, termMonths);
 	const denominator = Math.pow(1 + monthlyRate, termMonths) - 1;
 	const monthlyPayment = principal * (numerator / denominator);
@@ -79,14 +83,18 @@ export function calculateLoan(params: LoanParams): LoanResult {
 /**
  * Calculate present value considering inflation
  * PV = FV / (1 + inflation)^months
+ * 
+ * Uses monthly inflation rate directly (as published by statistical agencies)
+ * Example: If monthly CPI inflation is 2.5%, use 2.5
  */
 export function calculatePresentValue(
 	futureValue: number,
-	annualInflationRate: number,
+	monthlyInflationRate: number,
 	months: number
 ): number {
-	const monthlyInflationRate = annualInflationRate / 100 / 12;
-	return futureValue / Math.pow(1 + monthlyInflationRate, months);
+	// Convert percentage to decimal (2.5% -> 0.025)
+	const inflationDecimal = monthlyInflationRate / 100;
+	return futureValue / Math.pow(1 + inflationDecimal, months);
 }
 
 /**
@@ -98,7 +106,7 @@ export function calculatePresentValue(
  * - If inflation rate provided, calculates present value of received amount
  */
 export function calculateTFS(params: TFSParams): TFSResult {
-	const { principal, termMonths, organizationFee, deliveryMonth, annualInflationRate = 0 } = params;
+	const { principal, termMonths, organizationFee, deliveryMonth, monthlyInflationRate = 0 } = params;
 	
 	// Monthly payment is simply principal divided by term
 	const monthlyPayment = principal / termMonths;
@@ -111,9 +119,9 @@ export function calculateTFS(params: TFSParams): TFSResult {
 	let realValueLoss = 0;
 	let inflationImpact = 0;
 	
-	if (annualInflationRate > 0) {
+	if (monthlyInflationRate > 0) {
 		// Calculate the present value of the principal received at delivery month
-		principalPresentValue = calculatePresentValue(principal, annualInflationRate, deliveryMonth);
+		principalPresentValue = calculatePresentValue(principal, monthlyInflationRate, deliveryMonth);
 		realValueLoss = principal - principalPresentValue;
 		inflationImpact = (realValueLoss / principal) * 100;
 	}
@@ -149,7 +157,7 @@ export function compareOptions(
 	// The real value of what you receive is diminished by inflation
 	let inflationAdjustedDifference = difference;
 	
-	if (tfsParams.annualInflationRate && tfsParams.annualInflationRate > 0) {
+	if (tfsParams.monthlyInflationRate && tfsParams.monthlyInflationRate > 0) {
 		// Real cost of TFS considering inflation
 		// You pay totalCost but receive only principalPresentValue in today's money
 		const tfsRealCost = tfsResult.totalCost + (tfsResult.realValueLoss || 0);
@@ -205,7 +213,7 @@ export function generateMonthlyComparison(
 		
 		// Calculate inflation-adjusted difference
 		let inflationAdjustedDifference = difference;
-		if (tfsParams.annualInflationRate && tfsParams.annualInflationRate > 0) {
+		if (tfsParams.monthlyInflationRate && tfsParams.monthlyInflationRate > 0) {
 			const tfsRealCost = tfsResult.totalCost + (tfsResult.realValueLoss || 0);
 			inflationAdjustedDifference = loanResult.totalCost - tfsRealCost;
 		}

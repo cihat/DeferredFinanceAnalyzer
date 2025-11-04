@@ -49,17 +49,22 @@
 					</div>
 
 					<div class="space-y-2">
-						<Label for="inflation-rate">Yıllık Enflasyon Oranı (%)</Label>
+						<Label for="inflation-rate">
+							Aylık Enflasyon Oranı (%)
+							<span class="text-xs text-muted-foreground ml-1">
+								(TÜİK'in açıkladığı aylık oran)
+							</span>
+						</Label>
 						<Input
 							id="inflation-rate"
 							type="number"
 							value={financialStore.inflationRate}
 							oninput={(e) => financialStore.setInflationRate(Number(e.currentTarget.value))}
 							min="0"
-							step="0.1"
+							step="0.01"
 						/>
 						<p class="text-xs text-muted-foreground">
-							Paranın değer kaybını hesaplamak için kullanılır
+							Örnek: TÜİK aylık %2.5 enflasyon açıkladıysa, 2.5 yazın
 						</p>
 					</div>
 				</Card.Content>
@@ -72,15 +77,23 @@
 				</Card.Header>
 				<Card.Content class="space-y-4">
 					<div class="space-y-2">
-						<Label for="loan-rate">Yıllık Faiz Oranı (%)</Label>
+						<Label for="loan-rate">
+							Aylık Faiz Oranı (%)
+							<span class="text-xs text-muted-foreground ml-1">
+								(Bankanın ilan ettiği aylık oran)
+							</span>
+						</Label>
 						<Input
 							id="loan-rate"
 							type="number"
 							value={financialStore.loanInterestRate}
 							oninput={(e) => financialStore.setLoanInterestRate(Number(e.currentTarget.value))}
 							min="0"
-							step="0.1"
+							step="0.01"
 						/>
+						<p class="text-xs text-muted-foreground">
+							Örnek: Banka %3 aylık faiz diyorsa, 3 yazın
+						</p>
 					</div>
 
 					<div class="space-y-2">

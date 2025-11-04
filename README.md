@@ -10,7 +10,7 @@ A modern, responsive web application built with SvelteKit and shadcn-svelte that
 
 ## 🌐 Live Demo
 
-**Production:** [https://fbec739a.deferredfinance.pages.dev](https://fbec739a.deferredfinance.pages.dev)
+**Production:** [https://944d2a53.deferredfinance.pages.dev](https://944d2a53.deferredfinance.pages.dev)
 
 ## Features
 

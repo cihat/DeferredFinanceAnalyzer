@@ -2,9 +2,11 @@
 
 ## Live Application
 
-**Latest Production URL:** https://fbec739a.deferredfinance.pages.dev
+**Latest Production URL:** https://944d2a53.deferredfinance.pages.dev
 
 **Previous Deployments:**
+- https://56c49e11.deferredfinance.pages.dev (v1.2.0 - monthly interest rate)
+- https://fbec739a.deferredfinance.pages.dev (v1.1.1 - deploy scripts)
 - https://8c274ae1.deferredfinance.pages.dev (v1.1.0 - inflation feature)
 - https://556c2047.deferredfinance.pages.dev (v1.0.0 - initial deployment)
 
