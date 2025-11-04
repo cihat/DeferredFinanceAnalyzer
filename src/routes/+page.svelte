@@ -17,10 +17,14 @@
 </script>
 
 <div class="container mx-auto p-4 md:p-8 max-w-7xl">
-	<div class="mb-8">
+	<div class="mb-4">
 		<h1 class="text-3xl font-bold mb-2">Finansman Karşılaştırma Aracı</h1>
 		<p class="text-muted-foreground">
-			Banka kredisi ile Tasarruf Finansman Sistemi arasındaki farkı hesaplayın
+			Banka kredisi ile Tasarruf Finansman Sistemleri(Evim Sistemleri) arasındaki farkı hesaplayın
+		</p>
+		<p class="text-muted-foreground text-sm mt-2 font-bold max-w-xl">
+			Bu aracı kullanarak, Banka Kredisi ile Tasarruf Finansman Sistemi arasındaki farkı kabaca hesaplayabilirsiniz. 
+			Degisen Enflasyon faktörleri hesaplamaya dahil edilmemektedir.
 		</p>
 	</div>
 
@@ -269,13 +273,11 @@
 				</Card.Header>
 				<Card.Content class="space-y-4">
 					<div
-						class="text-center p-6 rounded-lg border-2 transition-all"
+						class="text-center p-6 rounded-lg border-2 transition-all bg-white dark:bg-gray-900"
 						class:border-green-500={financialStore.comparisonResult.betterOption === 'tfs'}
-						class:bg-green-50={financialStore.comparisonResult.betterOption === 'tfs'}
-						class:dark:bg-green-950={financialStore.comparisonResult.betterOption === 'tfs'}
+						class:shadow-green-100={financialStore.comparisonResult.betterOption === 'tfs'}
 						class:border-blue-500={financialStore.comparisonResult.betterOption === 'loan'}
-						class:bg-blue-50={financialStore.comparisonResult.betterOption === 'loan'}
-						class:dark:bg-blue-950={financialStore.comparisonResult.betterOption === 'loan'}
+						class:shadow-blue-100={financialStore.comparisonResult.betterOption === 'loan'}
 					>
 						<div class="flex items-center justify-center gap-2 mb-2">
 							<span class="text-3xl">
@@ -331,10 +333,21 @@
 							class:border-muted={financialStore.comparisonResult.betterOption !== 'loan'}
 							class:bg-muted={financialStore.comparisonResult.betterOption !== 'loan'}
 						>
-							<p class="text-xs text-muted-foreground mb-1">Banka Kredisi</p>
-							<p class="text-xl font-bold">
-								{formatCurrency(financialStore.comparisonResult.loanTotal)}
-							</p>
+						<p 
+							class="text-xs mb-1"
+							class:text-muted-foreground={financialStore.comparisonResult.betterOption !== 'loan'}
+							class:text-blue-700={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:text-blue-300={financialStore.comparisonResult.betterOption === 'loan'}
+						>
+							Banka Kredisi
+						</p>
+						<p 
+							class="text-xl font-bold"
+							class:text-blue-900={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:text-blue-100={financialStore.comparisonResult.betterOption === 'loan'}
+						>
+							{formatCurrency(financialStore.comparisonResult.loanTotal)}
+						</p>
 							{#if financialStore.comparisonResult.betterOption === 'loan'}
 								<p class="text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium">
 									✓ {financialStore.deliveryMonth}. ayda en ucuz
@@ -349,10 +362,21 @@
 							class:border-muted={financialStore.comparisonResult.betterOption !== 'tfs'}
 							class:bg-muted={financialStore.comparisonResult.betterOption !== 'tfs'}
 						>
-							<p class="text-xs text-muted-foreground mb-1">Tasarruf Finansman</p>
-							<p class="text-xl font-bold">
-								{formatCurrency(financialStore.comparisonResult.tfsTotal)}
-							</p>
+						<p 
+							class="text-xs mb-1"
+							class:text-muted-foreground={financialStore.comparisonResult.betterOption !== 'tfs'}
+							class:text-green-700={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:text-green-300={financialStore.comparisonResult.betterOption === 'tfs'}
+						>
+							Tasarruf Finansman
+						</p>
+						<p 
+							class="text-xl font-bold"
+							class:text-green-900={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:text-green-100={financialStore.comparisonResult.betterOption === 'tfs'}
+						>
+							{formatCurrency(financialStore.comparisonResult.tfsTotal)}
+						</p>
 							{#if financialStore.comparisonResult.betterOption === 'tfs'}
 								<p class="text-xs text-green-700 dark:text-green-400 mt-2 font-medium">
 									✓ {financialStore.deliveryMonth}. ayda en ucuz
