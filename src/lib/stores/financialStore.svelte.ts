@@ -19,10 +19,10 @@ class FinancialStore {
 	// Input parameters
 	principal = $state(500000);
 	loanInterestRate = $state(3.0); // Aylık faiz oranı (%)
-	loanTermMonths = $state(120);
-	tfsTermMonths = $state(60);
+	loanTermMonths = $state(24);
+	tfsTermMonths = $state(36);
 	tfsOrganizationFee = $state(10000);
-	deliveryMonth = $state(30);
+	deliveryMonth = $state(12);
 	inflationRate = $state(2.5); // Aylık enflasyon oranı (%)
 
 	// Computed results

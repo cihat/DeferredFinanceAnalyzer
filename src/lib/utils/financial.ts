@@ -139,6 +139,7 @@ export function calculateTFS(params: TFSParams): TFSResult {
 /**
  * Compare loan vs TFS and determine which is better
  * Takes inflation into account for TFS delivery value
+ * Dynamically determines better option based on delivery month and inflation
  */
 export function compareOptions(
 	loanParams: LoanParams,
@@ -149,20 +150,26 @@ export function compareOptions(
 	
 	// Standard comparison without inflation adjustment
 	const difference = loanResult.totalCost - tfsResult.totalCost;
-	const betterOption = difference > 0 ? 'tfs' : 'loan';
-	const savingsPercentage = Math.abs(difference / loanResult.totalCost) * 100;
 	
 	// Inflation-adjusted comparison
 	// For TFS: you pay totalCost but receive principal at delivery month
 	// The real value of what you receive is diminished by inflation
 	let inflationAdjustedDifference = difference;
+	let betterOption: 'loan' | 'tfs';
+	let effectiveDifference = difference;
 	
 	if (tfsParams.monthlyInflationRate && tfsParams.monthlyInflationRate > 0) {
 		// Real cost of TFS considering inflation
 		// You pay totalCost but receive only principalPresentValue in today's money
 		const tfsRealCost = tfsResult.totalCost + (tfsResult.realValueLoss || 0);
 		inflationAdjustedDifference = loanResult.totalCost - tfsRealCost;
+		// Use inflation-adjusted difference when inflation is present
+		effectiveDifference = inflationAdjustedDifference;
 	}
+	
+	// Determine better option based on delivery month (with or without inflation)
+	betterOption = effectiveDifference > 0 ? 'tfs' : 'loan';
+	const savingsPercentage = Math.abs(effectiveDifference / loanResult.totalCost) * 100;
 	
 	return {
 		loanTotal: loanResult.totalCost,
@@ -211,19 +218,25 @@ export function generateMonthlyComparison(
 		const tfsResult = calculateTFS({ ...tfsParams, deliveryMonth: month });
 		const difference = loanResult.totalCost - tfsResult.totalCost;
 		
-		// Calculate inflation-adjusted difference
+		// Calculate inflation-adjusted difference and determine better option dynamically
 		let inflationAdjustedDifference = difference;
+		let effectiveDifference = difference;
+		
 		if (tfsParams.monthlyInflationRate && tfsParams.monthlyInflationRate > 0) {
 			const tfsRealCost = tfsResult.totalCost + (tfsResult.realValueLoss || 0);
 			inflationAdjustedDifference = loanResult.totalCost - tfsRealCost;
+			effectiveDifference = inflationAdjustedDifference;
 		}
+		
+		// Determine better option based on the effective difference (inflation-adjusted if applicable)
+		const betterOption = effectiveDifference > 0 ? 'tfs' : 'loan';
 		
 		results.push({
 			month,
 			loanTotal: loanResult.totalCost,
 			tfsTotal: tfsResult.totalCost,
 			difference,
-			betterOption: difference > 0 ? 'tfs' : 'loan',
+			betterOption,
 			principalPresentValue: tfsResult.principalPresentValue,
 			realValueLoss: tfsResult.realValueLoss,
 			inflationImpact: tfsResult.inflationImpact,

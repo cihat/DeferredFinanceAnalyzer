@@ -257,38 +257,187 @@
 					: 'border-2 border-blue-500'}
 			>
 				<Card.Header>
-					<Card.Title>Karşılaştırma Sonucu</Card.Title>
+					<Card.Title class="flex items-center justify-between">
+						<span>Karşılaştırma Sonucu</span>
+						<span class="text-sm font-normal text-muted-foreground">
+							{financialStore.deliveryMonth}. Ayda
+						</span>
+					</Card.Title>
+					<p class="text-sm text-muted-foreground">
+						Seçili teslimat ayına göre maliyet analizi
+					</p>
 				</Card.Header>
 				<Card.Content class="space-y-4">
-					<div class="text-center p-6 rounded-lg bg-muted/50">
-						<p class="text-sm text-muted-foreground mb-2">Daha Avantajlı Seçenek</p>
-						<p class="text-3xl font-bold mb-2">
+					<div
+						class="text-center p-6 rounded-lg border-2 transition-all"
+						class:border-green-500={financialStore.comparisonResult.betterOption === 'tfs'}
+						class:bg-green-50={financialStore.comparisonResult.betterOption === 'tfs'}
+						class:dark:bg-green-950={financialStore.comparisonResult.betterOption === 'tfs'}
+						class:border-blue-500={financialStore.comparisonResult.betterOption === 'loan'}
+						class:bg-blue-50={financialStore.comparisonResult.betterOption === 'loan'}
+						class:dark:bg-blue-950={financialStore.comparisonResult.betterOption === 'loan'}
+					>
+						<div class="flex items-center justify-center gap-2 mb-2">
+							<span class="text-3xl">
+								{financialStore.comparisonResult.betterOption === 'tfs' ? '🏆' : '🏦'}
+							</span>
+						</div>
+						<p
+							class="text-sm font-medium mb-1"
+							class:text-green-700={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:text-green-300={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:text-blue-700={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:text-blue-300={financialStore.comparisonResult.betterOption === 'loan'}
+						>
+							{financialStore.deliveryMonth}. Ayda Daha Avantajlı
+						</p>
+						<p
+							class="text-3xl font-bold mb-2"
+							class:text-green-800={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:text-green-300={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:text-blue-800={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:text-blue-300={financialStore.comparisonResult.betterOption === 'loan'}
+						>
 							{financialStore.comparisonResult.betterOption === 'tfs'
-								? 'Tasarruf Finansman Sistemi'
+								? 'Tasarruf Finansman'
 								: 'Banka Kredisi'}
 						</p>
-						<p class="text-xl font-semibold">
+						<p
+							class="text-xl font-semibold mb-1"
+							class:text-green-700={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:text-green-400={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:text-blue-700={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:text-blue-400={financialStore.comparisonResult.betterOption === 'loan'}
+						>
 							{formatCurrency(Math.abs(financialStore.comparisonResult.difference))} tasarruf
 						</p>
-						<p class="text-sm text-muted-foreground mt-1">
+						<p
+							class="text-sm font-medium"
+							class:text-green-600={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:text-green-400={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:text-blue-600={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:text-blue-400={financialStore.comparisonResult.betterOption === 'loan'}
+						>
 							({formatPercentage(financialStore.comparisonResult.savingsPercentage)} daha ucuz)
 						</p>
 					</div>
 
-					<div class="grid grid-cols-2 gap-4 text-sm">
-						<div>
-							<p class="text-muted-foreground">Banka Kredisi</p>
-							<p class="font-semibold">
+					<div class="grid grid-cols-2 gap-4">
+						<div
+							class="p-4 rounded-lg border-2 transition-all"
+							class:border-blue-500={financialStore.comparisonResult.betterOption === 'loan'}
+							class:bg-blue-50={financialStore.comparisonResult.betterOption === 'loan'}
+							class:dark:bg-blue-950={financialStore.comparisonResult.betterOption === 'loan'}
+							class:border-muted={financialStore.comparisonResult.betterOption !== 'loan'}
+							class:bg-muted={financialStore.comparisonResult.betterOption !== 'loan'}
+						>
+							<p class="text-xs text-muted-foreground mb-1">Banka Kredisi</p>
+							<p class="text-xl font-bold">
 								{formatCurrency(financialStore.comparisonResult.loanTotal)}
 							</p>
+							{#if financialStore.comparisonResult.betterOption === 'loan'}
+								<p class="text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium">
+									✓ {financialStore.deliveryMonth}. ayda en ucuz
+								</p>
+							{/if}
 						</div>
-						<div>
-							<p class="text-muted-foreground">Tasarruf Finansman</p>
-							<p class="font-semibold">
+						<div
+							class="p-4 rounded-lg border-2 transition-all"
+							class:border-green-500={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:bg-green-50={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:dark:bg-green-950={financialStore.comparisonResult.betterOption === 'tfs'}
+							class:border-muted={financialStore.comparisonResult.betterOption !== 'tfs'}
+							class:bg-muted={financialStore.comparisonResult.betterOption !== 'tfs'}
+						>
+							<p class="text-xs text-muted-foreground mb-1">Tasarruf Finansman</p>
+							<p class="text-xl font-bold">
 								{formatCurrency(financialStore.comparisonResult.tfsTotal)}
 							</p>
+							{#if financialStore.comparisonResult.betterOption === 'tfs'}
+								<p class="text-xs text-green-700 dark:text-green-400 mt-2 font-medium">
+									✓ {financialStore.deliveryMonth}. ayda en ucuz
+								</p>
+							{/if}
 						</div>
 					</div>
+
+					{#if financialStore.inflationRate > 0 && financialStore.tfsResult.realValueLoss}
+						<div class="rounded-lg bg-amber-50 dark:bg-amber-950 p-4 border border-amber-200 dark:border-amber-800">
+							<div class="flex items-start gap-2">
+								<span class="text-amber-600 dark:text-amber-400 text-xl">⚠️</span>
+								<div class="flex-1">
+									<p class="text-sm font-semibold text-amber-900 dark:text-amber-100 mb-1">
+										{financialStore.deliveryMonth}. Ayda Enflasyon Etkisi
+									</p>
+									<p class="text-xs text-amber-800 dark:text-amber-200">
+										Alacağınız {formatCurrency(financialStore.principal)}'nin bugünkü değeri:
+										<strong class="font-semibold">
+											{formatCurrency(financialStore.tfsResult.principalPresentValue || 0)}
+										</strong>
+									</p>
+									<p class="text-xs text-amber-700 dark:text-amber-300 mt-2">
+										Değer kaybı: {formatCurrency(financialStore.tfsResult.realValueLoss || 0)}
+										({formatPercentage(financialStore.tfsResult.inflationImpact || 0)})
+									</p>
+								</div>
+							</div>
+						</div>
+					{/if}
+
+					<!-- En iyi teslimat ayı önerisi -->
+					{@const bestMonthData = financialStore.monthlyComparisonData.reduce(
+						(best, current) => {
+							const bestDiff = Math.abs(
+								financialStore.inflationRate > 0 && best.inflationAdjustedDifference
+									? best.inflationAdjustedDifference
+									: best.difference
+							);
+							const currentDiff = Math.abs(
+								financialStore.inflationRate > 0 && current.inflationAdjustedDifference
+									? current.inflationAdjustedDifference
+									: current.difference
+							);
+							return currentDiff > bestDiff ? current : best;
+						},
+						financialStore.monthlyComparisonData[0]
+					)}
+					{#if bestMonthData && bestMonthData.month !== financialStore.deliveryMonth && Math.abs(
+							(financialStore.inflationRate > 0 && bestMonthData.inflationAdjustedDifference
+								? bestMonthData.inflationAdjustedDifference
+								: bestMonthData.difference) -
+								(financialStore.inflationRate > 0 &&
+								financialStore.comparisonResult.inflationAdjustedDifference
+									? financialStore.comparisonResult.inflationAdjustedDifference
+									: financialStore.comparisonResult.difference)
+						) > 1000}
+						<div class="rounded-lg bg-blue-50 dark:bg-blue-950 p-4 border border-blue-200 dark:border-blue-800">
+							<div class="flex items-start gap-2">
+								<span class="text-blue-600 dark:text-blue-400 text-xl">💡</span>
+								<div class="flex-1">
+									<p class="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
+										Daha İyi Bir Seçenek Var!
+									</p>
+									<p class="text-xs text-blue-800 dark:text-blue-200">
+										<strong>{bestMonthData.month}. ayda</strong> teslimat alırsanız,
+										<strong>
+											{formatCurrency(
+												Math.abs(
+													(financialStore.inflationRate > 0 && bestMonthData.inflationAdjustedDifference
+														? bestMonthData.inflationAdjustedDifference
+														: bestMonthData.difference) -
+														(financialStore.inflationRate > 0 &&
+														financialStore.comparisonResult.inflationAdjustedDifference
+															? financialStore.comparisonResult.inflationAdjustedDifference
+															: financialStore.comparisonResult.difference)
+												)
+											)}
+										</strong>
+										daha fazla tasarruf edebilirsiniz.
+									</p>
+								</div>
+							</div>
+						</div>
+					{/if}
 				</Card.Content>
 			</Card.Root>
 
