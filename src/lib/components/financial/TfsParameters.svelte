@@ -19,11 +19,11 @@
 				type="number"
 				value={financialStore.tfsTermMonths}
 				oninput={(e: Event) => financialStore.setTfsTermMonths(Number((e.target as HTMLInputElement).value))}
-				min="1"
+				min="6"
 				step="1"
 			/>
 			<p class="text-xs text-muted-foreground">
-				{formatMonthLabel(financialStore.tfsTermMonths)}
+				{formatMonthLabel(financialStore.tfsTermMonths)} (minimum 6 ay)
 			</p>
 		</div>
 
@@ -49,17 +49,20 @@
 					({formatMonthLabel(financialStore.deliveryMonth)})
 				</span>
 			</Label>
+			<p class="text-xs text-amber-600 dark:text-amber-400">
+				⚠️ İlk 150 gün içinde teslimat alınamaz (minimum 6. ay)
+			</p>
 			<Slider
 				id="delivery-month"
 				value={[financialStore.deliveryMonth]}
 				onValueChange={(v: number[]) => financialStore.setDeliveryMonth(v[0])}
-				min={1}
+				min={6}
 				max={financialStore.tfsTermMonths}
 				step={1}
 				class="cursor-pointer"
 			/>
 			<div class="flex justify-between text-xs text-muted-foreground">
-				<span>1. ay</span>
+				<span>6. ay (minimum)</span>
 				<span>{financialStore.tfsTermMonths}. ay</span>
 			</div>
 		</div>

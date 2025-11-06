@@ -83,9 +83,9 @@ class FinancialStore {
 			this.principal > 0 &&
 			this.loanInterestRate >= 0 &&
 			this.loanTermMonths > 0 &&
-			this.tfsTermMonths > 0 &&
+			this.tfsTermMonths >= 6 &&
 			this.tfsOrganizationFee >= 0 &&
-			this.deliveryMonth > 0 &&
+			this.deliveryMonth >= 6 &&
 			this.deliveryMonth <= this.tfsTermMonths
 		);
 	});
@@ -104,10 +104,14 @@ class FinancialStore {
 	}
 
 	setTfsTermMonths(value: number) {
-		this.tfsTermMonths = Math.max(1, Math.round(value));
-		// Ensure delivery month doesn't exceed new term
+		// Minimum 6 ay (150 gün kuralı)
+		this.tfsTermMonths = Math.max(6, Math.round(value));
+		// Ensure delivery month doesn't exceed new term and is at least 6
 		if (this.deliveryMonth > this.tfsTermMonths) {
 			this.deliveryMonth = this.tfsTermMonths;
+		}
+		if (this.deliveryMonth < 6) {
+			this.deliveryMonth = 6;
 		}
 	}
 
@@ -116,7 +120,8 @@ class FinancialStore {
 	}
 
 	setDeliveryMonth(value: number) {
-		this.deliveryMonth = Math.max(1, Math.min(this.tfsTermMonths, Math.round(value)));
+		// Minimum 6 ay (150 gün kuralı)
+		this.deliveryMonth = Math.max(6, Math.min(this.tfsTermMonths, Math.round(value)));
 	}
 
 	setInflationRate(value: number) {

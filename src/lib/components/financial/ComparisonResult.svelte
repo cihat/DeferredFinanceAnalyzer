@@ -10,9 +10,11 @@
 	}
 
 	function getBestMonth(): MonthData | null {
-		if (financialStore.monthlyComparisonData.length === 0) return null;
+		// Sadece 6. ay ve sonrasını değerlendir (ilk 150 gün teslimat yok)
+		const validMonths = financialStore.monthlyComparisonData.filter((d: any) => d.month >= 6);
+		if (validMonths.length === 0) return null;
 
-		return financialStore.monthlyComparisonData.reduce(
+		return validMonths.reduce(
 			(best: MonthData, current: MonthData) => {
 				const bestDiff = Math.abs(
 					financialStore.inflationRate > 0 && best.inflationAdjustedDifference
@@ -26,7 +28,7 @@
 				);
 				return currentDiff > bestDiff ? current : best;
 			},
-			financialStore.monthlyComparisonData[0]
+			validMonths[0]
 		);
 	}
 
