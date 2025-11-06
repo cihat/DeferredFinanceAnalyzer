@@ -23,7 +23,7 @@ class FinancialStore {
 	tfsTermMonths = $state(36);
 	tfsOrganizationFee = $state(10000);
 	deliveryMonth = $state(12);
-	inflationRate = $state(2.5); // Aylık enflasyon oranı (%)
+	inflationRate = $state(2.55); // Aylık enflasyon oranı (%)
 
 	// Computed results
 	loanResult = $derived.by((): LoanResult => {

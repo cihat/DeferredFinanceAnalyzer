@@ -29,9 +29,6 @@
 		<div class="space-y-2">
 			<Label for="inflation-rate">
 				Aylık Enflasyon Oranı (%)
-				<span class="text-xs text-muted-foreground ml-1">
-					(TÜİK'in açıkladığı aylık oran)
-				</span>
 			</Label>
 			<Input
 				id="inflation-rate"
@@ -42,7 +39,7 @@
 				step="0.01"
 			/>
 			<p class="text-xs text-muted-foreground">
-				Örnek: TÜİK aylık %2.5 enflasyon açıkladıysa, 2.5 yazın
+				Örnek: TÜİK aylık %2,55 enflasyon açıkladıysa, 2,55 yazın
 			</p>
 		</div>
 	</Card.Content>
