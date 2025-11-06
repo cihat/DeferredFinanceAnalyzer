@@ -266,3 +266,14 @@ export function formatPercentage(value: number): string {
 	return `${value.toFixed(2)}%`;
 }
 
+/**
+ * Format month display as years and months
+ */
+export function formatMonthLabel(month: number): string {
+	const years = Math.floor(month / 12);
+	const months = month % 12;
+	if (years === 0) return `${months} ay`;
+	if (months === 0) return `${years} yıl`;
+	return `${years} yıl ${months} ay`;
+}
+
